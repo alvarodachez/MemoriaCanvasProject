@@ -162,4 +162,53 @@ public class Conexion {
 
 		return misTareas;
 	}
+	
+	public ArrayList<Tarea> devolverMisTareas(String status) {
+
+		Query query = ses.createQuery("SELECT t FROM Tarea t WHERE UPPER(estado) LIKE \'" +status.toUpperCase()+"\' ORDER BY idTarea ASC");
+		ArrayList<Tarea> misTareas = new ArrayList<Tarea>();
+		misTareas = (ArrayList<Tarea>) query.getResultList();
+
+		return misTareas;
+	}
+	
+	public ArrayList<Tarea> devolverMisTareas(int idUsuario,String status) {
+
+		Query query = ses.createQuery("SELECT t FROM Tarea t WHERE UPPER(estado) LIKE \'" +status.toUpperCase()+"\' AND idUser = "+idUsuario+" ORDER BY idTarea ASC");
+		ArrayList<Tarea> misTareas = new ArrayList<Tarea>();
+		misTareas = (ArrayList<Tarea>) query.getResultList();
+
+		return misTareas;
+	}
+	
+	public ArrayList<Tarea>devolverTareas(){
+		Query query = ses.createQuery("SELECT t FROM Tarea t ORDER BY idTarea ASC");
+		ArrayList<Tarea> misTareas = new ArrayList<Tarea>();
+		misTareas = (ArrayList<Tarea>) query.getResultList();
+		
+		return misTareas;
+	}
+	
+	public ArrayList<Usuario> devolverUsuarios(){
+		Query query = ses.createQuery("SELECT u FROM Usuario u ORDER BY idUsuario ASC");
+		ArrayList<Usuario> usus = new ArrayList<Usuario>();
+		usus = (ArrayList<Usuario>)query.getResultList();
+		return usus;
+	}
+	
+	public ArrayList<Usuario> devolverUsuarios(String apodoUsuario){
+		Query query = ses.createQuery("SELECT u FROM Usuario u WHERE UPPER(apodo) LIKE \'"+apodoUsuario.toUpperCase()+"\' ORDER BY idUsuario ASC");
+		ArrayList<Usuario> usus = new ArrayList<Usuario>();
+		usus = (ArrayList<Usuario>)query.getResultList();
+		return usus;
+	}
+	
+	public boolean borrarUsuario(int idUsuario) {
+		Usuario u1 = (Usuario) ses.get(Usuario.class, idUsuario);
+		ses.getTransaction().begin();
+		ses.delete(u1);
+		ses.getTransaction().commit();
+
+		return true;
+	}
 }

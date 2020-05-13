@@ -7,13 +7,37 @@
 					    VERSION 1.0
 	------------------------------------------------------------------------------------
 		
-		--Insertar tareas, modificarlas borrarlas.
-		--Registro/Login
-		--Funciones de Admin (sin implementar en ejecucion)
-		--Consultar todas las tareas (sin filtros)
+		-->>Insertar tareas, modificarlas borrarlas.
+
+		-->>Registro/Login
+
+		-->>Funciones de Admin (sin implementar en ejecucion)
+
+		-->>Consultar todas las tareas (sin filtros)
 
 	------------------------------------------------------------------------------------
 					    VERSION 1.1
 	------------------------------------------------------------------------------------
+
+		-->>Arreglado error en registro y login, cuando habia error
+		en alguno de ellos seguia el programa sin mas.
+
+		-->>Implementacion de funciones de administrador:
+			
+			+Ver todos los usuarios
+			+Ver usario segun su apodo
+			+Ver todas las tareas del sistema
+			+Ver las todas las tareas segun su estado
+			+Ver todas las tareas de un usuario
+			+Ver las las tareas de un usuario segun su estado
+			+Insertar una tarea a un usuario
+			+Modificar el estado de una tarea a un usuario
+			+Borrar tarea a un usuario
+			+Borrar usuario
+
+		-->Implementacion de mejores "selectores" para el cambio de estado
+
+		-->Filtros de busqueda segun el estado de las tareas
+
 
 
