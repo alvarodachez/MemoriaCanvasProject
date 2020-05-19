@@ -35,9 +35,21 @@
 			+Borrar tarea a un usuario
 			+Borrar usuario
 
-		-->Implementacion de mejores "selectores" para el cambio de estado
+		-->>Implementacion de mejores "selectores" para el cambio de estado
 
-		-->Filtros de busqueda segun el estado de las tareas
+		-->>Filtros de busqueda segun el estado de las tareas
+	
+	------------------------------------------------------------------------------------
+					    VERSION 1.2
+	------------------------------------------------------------------------------------
+
+		-->>Flujo entre la sesion y el login/registro permitiendo
+		volver a esta saliendo de la sesion
+
+		-->>Cambio a relacion 1 a muchos con hibernate (mejoras en el codigo) 
+
+		-->>Organizacion de codigo, mas legible (comentarios)
+	
 
 
 

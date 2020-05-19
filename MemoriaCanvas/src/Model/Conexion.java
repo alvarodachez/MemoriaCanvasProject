@@ -21,6 +21,8 @@ public class Conexion {
 
 	}
 
+	// ********CONEXION*********
+
 	private static void createSession() {
 		if (SESSION == null) {
 			SESSION = new Conexion();
@@ -42,93 +44,71 @@ public class Conexion {
 		sf.close();
 	}
 
-	public boolean insertarTarea(int idTarea, String nombre, String estado, int duracion, int idUser) {
-
-		Tarea t1 = new Tarea(idTarea, nombre, estado, duracion, idUser);
-
-		ses.getTransaction().begin();
-		ses.save(t1);
-		ses.getTransaction().commit();
-
-		return true;
-	}
-
+	// **********INSERTAR TAREAS***************
 	public boolean insertarTarea(String nombre, String estado, int duracion, int idUser) {
 
 		int idTarea = 0;
 		Query query = ses.createQuery("SELECT MAX(idTarea) FROM Tarea");
 		idTarea = ((int) query.getSingleResult()) + 1;
-		Tarea t1 = new Tarea(idTarea, nombre, estado, duracion, idUser);
+		Usuario us = (Usuario) ses.get(Usuario.class, idUser);
+		Tarea t1 = new Tarea(idTarea, nombre, estado, duracion, us);
+		System.out.println(us);
+		System.out.println(t1);
+		us.añadirTarea(t1);
 
 		ses.getTransaction().begin();
-		ses.save(t1);
+
+		ses.saveOrUpdate(us);
 		ses.getTransaction().commit();
 
 		return true;
 	}
+	// ************ACTUALIZAR TAREAS***************
 
-	public boolean actualizarEstado(int idTarea, String estado) {
+	public boolean actualizarEstado(int idTarea, String estado, int idUsuario) throws Exception {
+
+		Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
+
 		Tarea t1 = (Tarea) ses.get(Tarea.class, idTarea);
-		t1.setEstado(estado);
-		ses.getTransaction().begin();
-		ses.update(t1);
-		ses.getTransaction().commit();
 
-		return true;
-	}
-	
-	public boolean actualizarEstado(int idTarea, String estado,int idUsuario)throws Exception {
-		Query query = ses.createQuery("SELECT idUser FROM Tarea WHERE idTarea = "+idTarea);
-		int idUs = (int)query.getSingleResult();
-		
-		if(idUs != idUsuario) {
+		int idUs = t1.getIdUser();
+
+		if (idUs != idUsuario) {
 			throw new Exception("ID de tarea incorrecto");
 		}
-			
-		Tarea t1 = (Tarea) ses.get(Tarea.class, idTarea);
-		t1.setEstado(estado);
-		ses.getTransaction().begin();
-		ses.update(t1);
+
+		us.modificarEstado(idTarea, estado);
+
+		ses.beginTransaction();
+
+		ses.update(us);
+
 		ses.getTransaction().commit();
 
 		return true;
 	}
 
-	public boolean borrarTarea(int idTarea) {
+	// ***************BORRAR TAREAS**********************
+	public boolean borrarTarea(int idTarea, int idUsuario) throws Exception {
+
 		Tarea t1 = (Tarea) ses.get(Tarea.class, idTarea);
+		Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
+		int idUs = t1.getIdUser();
+
+		if (idUs != idUsuario) {
+			throw new Exception("ID de tarea incorrecto");
+		}
+
+		us.borrarTarea(t1);
 		ses.getTransaction().begin();
+		ses.update(us);
 		ses.delete(t1);
 		ses.getTransaction().commit();
 
 		return true;
 	}
-	
-	public boolean borrarTarea(int idTarea,int idUsuario)throws Exception {
-		
-		Query query = ses.createQuery("SELECT idUser FROM Tarea WHERE idTarea = "+idTarea);
-		int idUs = (int)query.getSingleResult();
-		
-		if(idUs != idUsuario) {
-			throw new Exception("ID de tarea incorrecto");
-		}
-		Tarea t1 = (Tarea) ses.get(Tarea.class, idTarea);
-		ses.getTransaction().begin();
-		ses.delete(t1);
-		ses.getTransaction().commit();
 
-		return true;
-	}
-
-	public boolean insertarUsuario(int idUsuario, String apodo, String contraseña) {
-
-		Usuario u1 = new Usuario(idUsuario, apodo, contraseña);
-
-		ses.getTransaction().begin();
-		ses.save(u1);
-		ses.getTransaction().commit();
-
-		return true;
-	}
+	// ***************CREAR USARIOS**************************
 
 	public boolean insertarUsuario(String apodo, String contraseña) {
 		int idUsuario = 0;
@@ -146,63 +126,66 @@ public class Conexion {
 	public int devolverIdIniciarSesion(String apodo, String contraseña) {
 		Query query = ses.createQuery("SELECT idUsuario FROM Usuario WHERE UPPER(apodo) LIKE \'" + apodo.toUpperCase()
 				+ "\' AND UPPER(contraseña) LIKE \'" + contraseña.toUpperCase() + "\'");
-		// Query query = ses.createQuery("SELECT idUsuario FROM Usuario WHERE
-		// UPPER(apodo) LIKE :ap AND UPPER(contraseña) LIKE :cs");
-		//// query.setParameter("cs", contraseña);
 
 		int idUsuario = (int) query.getSingleResult();
 		return idUsuario;
 	}
 
+	// *********************DEVOLVER TAREAS********************
+
+	// *****Devolver todas las tareas de un usuario******
 	public ArrayList<Tarea> devolverMisTareas(int idUsuario) {
 
-		Query query = ses.createQuery("SELECT t FROM Tarea t WHERE idUser = " + idUsuario+" ORDER BY idTarea ASC");
-		ArrayList<Tarea> misTareas = new ArrayList<Tarea>();
-		misTareas = (ArrayList<Tarea>) query.getResultList();
+		Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
 
-		return misTareas;
+		return us.getTareas();
 	}
-	
+
+	// ******Devolver todas las tareas segun su estado*****
+
 	public ArrayList<Tarea> devolverMisTareas(String status) {
 
-		Query query = ses.createQuery("SELECT t FROM Tarea t WHERE UPPER(estado) LIKE \'" +status.toUpperCase()+"\' ORDER BY idTarea ASC");
+		Query query = ses.createQuery(
+				"SELECT t FROM Tarea t WHERE UPPER(estado) LIKE \'" + status.toUpperCase() + "\' ORDER BY idTarea ASC");
 		ArrayList<Tarea> misTareas = new ArrayList<Tarea>();
 		misTareas = (ArrayList<Tarea>) query.getResultList();
 
 		return misTareas;
 	}
-	
-	public ArrayList<Tarea> devolverMisTareas(int idUsuario,String status) {
+	// *****Devolver tareas de un usuario segun su estado****
 
-		Query query = ses.createQuery("SELECT t FROM Tarea t WHERE UPPER(estado) LIKE \'" +status.toUpperCase()+"\' AND idUser = "+idUsuario+" ORDER BY idTarea ASC");
-		ArrayList<Tarea> misTareas = new ArrayList<Tarea>();
-		misTareas = (ArrayList<Tarea>) query.getResultList();
+	public ArrayList<Tarea> devolverMisTareas(int idUsuario, String status) {
+		Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
 
-		return misTareas;
+		return us.getTareas(status.toUpperCase());
 	}
-	
-	public ArrayList<Tarea>devolverTareas(){
+	// *****Devolver todas las tareas******
+	public ArrayList<Tarea> devolverTareas() {
 		Query query = ses.createQuery("SELECT t FROM Tarea t ORDER BY idTarea ASC");
 		ArrayList<Tarea> misTareas = new ArrayList<Tarea>();
 		misTareas = (ArrayList<Tarea>) query.getResultList();
-		
+
 		return misTareas;
 	}
-	
-	public ArrayList<Usuario> devolverUsuarios(){
+
+	// *****************DEVOLVER USUARIOS******************************************
+	public ArrayList<Usuario> devolverUsuarios() {
 		Query query = ses.createQuery("SELECT u FROM Usuario u ORDER BY idUsuario ASC");
 		ArrayList<Usuario> usus = new ArrayList<Usuario>();
-		usus = (ArrayList<Usuario>)query.getResultList();
+		usus = (ArrayList<Usuario>) query.getResultList();
 		return usus;
 	}
-	
-	public ArrayList<Usuario> devolverUsuarios(String apodoUsuario){
-		Query query = ses.createQuery("SELECT u FROM Usuario u WHERE UPPER(apodo) LIKE \'"+apodoUsuario.toUpperCase()+"\' ORDER BY idUsuario ASC");
+
+	//*******Devolver usuario segun su apodo*****
+	public ArrayList<Usuario> devolverUsuarios(String apodoUsuario) {
+		Query query = ses.createQuery("SELECT u FROM Usuario u WHERE UPPER(apodo) LIKE \'" + apodoUsuario.toUpperCase()
+				+ "\' ORDER BY idUsuario ASC");
 		ArrayList<Usuario> usus = new ArrayList<Usuario>();
-		usus = (ArrayList<Usuario>)query.getResultList();
+		usus = (ArrayList<Usuario>) query.getResultList();
 		return usus;
 	}
-	
+
+	//*******************BORRAR USUARIOS********************
 	public boolean borrarUsuario(int idUsuario) {
 		Usuario u1 = (Usuario) ses.get(Usuario.class, idUsuario);
 		ses.getTransaction().begin();
@@ -211,4 +194,87 @@ public class Conexion {
 
 		return true;
 	}
+
+	// **************************TRASH CODE***************************
+
+//	public boolean insertarTarea(int idTarea, String nombre, String estado, int duracion, int idUser) {
+//
+//		Tarea t1 = new Tarea(idTarea, nombre, estado, duracion, idUser);
+//
+//		ses.getTransaction().begin();
+//		ses.save(t1);
+//		ses.getTransaction().commit();
+//
+//		return true;
+//	}
+
+//	public boolean actualizarEstado(int idTarea, String estado) {
+//	Tarea t1 = (Tarea) ses.get(Tarea.class, idTarea);
+//	t1.setEstado(estado);
+//	ses.getTransaction().begin();
+//	ses.update(t1);
+//	ses.getTransaction().commit();
+//
+//	return true;
+//}
+
+//public boolean actualizarEstadoRel(int idTarea, String estado, int idUsuario) {
+//	Tarea t1 = (Tarea) ses.get(Tarea.class, idTarea);
+//	Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
+//
+//	t1.setEstado(estado);
+//	us.modificarEstado(idTarea, estado);
+//
+//	ses.getTransaction();
+//	ses.saveOrUpdate(us);
+//	ses.saveOrUpdate(t1);
+//
+//	ses.getTransaction().commit();
+//
+//	return true;
+//}
+//	public boolean borrarTarea(int idTarea) {
+//	Tarea t1 = (Tarea) ses.get(Tarea.class, idTarea);
+//	ses.getTransaction().begin();
+//	ses.delete(t1);
+//	ses.getTransaction().commit();
+//
+//	return true;
+//}
+
+//public boolean borrarTarea(int idTarea, int idUsuario) throws Exception {
+//
+//	// Query query = ses.createQuery("SELECT idUsuario FROM Tarea WHERE idTarea =
+//	// "+idTarea);
+//	Tarea t1 = (Tarea) ses.get(Tarea.class, idTarea);
+//	int idUs = t1.getIdUser();
+//
+//	if (idUs != idUsuario) {
+//		throw new Exception("ID de tarea incorrecto");
+//	}
+//
+//	ses.getTransaction().begin();
+//	ses.delete(t1);
+//	ses.getTransaction().commit();
+//
+//	return true;
+//}
+//	public boolean insertarUsuario(int idUsuario, String apodo, String contraseña) {
+//
+//		Usuario u1 = new Usuario(idUsuario, apodo, contraseña);
+//
+//		ses.getTransaction().begin();
+//		ses.save(u1);
+//		ses.getTransaction().commit();
+//
+//		return true;
+//	}
+//	public ArrayList<Tarea> devolverMisTareas(int idUsuario) {
+//
+//		Query query = ses.createQuery("SELECT t FROM Tarea t WHERE idUser = " + idUsuario+" ORDER BY idTarea ASC");
+//		ArrayList<Tarea> misTareas = new ArrayList<Tarea>();
+//		misTareas = (ArrayList<Tarea>) query.getResultList();
+//
+//		return misTareas;
+//	}
 }

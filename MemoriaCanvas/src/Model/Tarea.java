@@ -2,6 +2,8 @@ package Model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Tarea {
@@ -11,19 +13,29 @@ public class Tarea {
 	private String nombre;
 	private String estado;
 	private int duracion;
-	private int idUser; //fk de una futura tabla usuarios
+	@ManyToOne
+	@JoinColumn(name="idUsuario")
+	private Usuario idUsuario;
+	//private int idUser; //fk de una futura tabla usuarios
 	
 	public Tarea() {
 		
 	}
 	
-	public Tarea(int idTarea, String nombre, String estado, int duracion, int idUser) {
+	public Tarea(int idTarea, String nombre, String estado, int duracion, Usuario idUsuario) {
 		this.idTarea = idTarea;
 		this.nombre = nombre;
 		this.estado = estado;
 		this.duracion = duracion;
-		this.idUser = idUser;
+		this.idUsuario = idUsuario;
 	}
+//	public Tarea(int idTarea, String nombre, String estado, int duracion, int idUser) {
+//		this.idTarea = idTarea;
+//		this.nombre = nombre;
+//		this.estado = estado;
+//		this.duracion = duracion;
+//		//this.idUser = idUser;
+//	}
 
 	public int getIdTarea() {
 		return idTarea;
@@ -58,11 +70,11 @@ public class Tarea {
 	}
 
 	public int getIdUser() {
-		return idUser;
+		return idUsuario.getIdUsuario();
 	}
 
 	public void setIdUser(int idUser) {
-		this.idUser = idUser;
+		this.idUsuario.setIdUsuario(idUser);
 	}
 
 	@Override
@@ -89,8 +101,7 @@ public class Tarea {
 
 	@Override
 	public String toString() {
-		return "Tarea [id=" + idTarea + ", nombre=" + nombre + ", estado=" + estado + ", duracion=" + duracion + ", idUser="
-				+ idUser + "]";
+		return "Tarea [id=" + idTarea + ", nombre=" + nombre + ", estado=" + estado + ", duracion=" + duracion + "]";
 	}
 	
 	

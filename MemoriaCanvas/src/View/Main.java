@@ -9,18 +9,32 @@ public class Main {
 
 	public static Scanner keyboard = new Scanner(System.in);
 	public static int ID_USUARIO_SESION;
+	public static int OPT_MENU;
 	public static void main(String[] args) {
 		
-		//REGISTRAR O LOGEAR
-
-		regLog();
 		
-		//SESION
-		if(ID_USUARIO_SESION == 1) {
-			sesionAdministrador();
-		}else {
-			sesion();
-		}
+
+		do {
+			
+			//REGISTRAR O LOGEAR
+			
+			
+			regLog();
+			
+			//SESION
+			if(OPT_MENU != 3) {
+				if(ID_USUARIO_SESION == 1) {
+					sesionAdministrador();
+				}else {
+					sesion();
+				}
+			}
+			
+			
+		}while(OPT_MENU != 3);
+		
+		
+		
 		
 		
 		
@@ -31,16 +45,24 @@ public class Main {
 		
 		System.out.println("1. Iniciar Sesion");
 		System.out.println("2. Registrarse");
+		System.out.println("3. Salir de la aplicacion");
 		
 		flag = readInteger("Introduce la opcion");
 		
-		if(flag == 1) {
-			iniciarSesion();
+		if(flag == 3) {
+			Operations.cerrarConexion();
+			OPT_MENU = 3;
 		}else {
-			registrarse();
-			iniciarSesion();
-			
+			if(flag == 1) {
+				iniciarSesion();
+			}else {
+				registrarse();
+				iniciarSesion();
+				
+			}
 		}
+		
+		
 	}
 	
 	public static void registrarse() {
@@ -259,7 +281,8 @@ public class Main {
 				}
 				break;
 			case 11:
-				Operations.cerrarConexion();
+				
+				ID_USUARIO_SESION = -1;
 				flag = 12;
 				break;
 				
@@ -305,7 +328,7 @@ public class Main {
 					break;
 				case 2:
 					try {
-						System.out.println(Operations.actualizarEstado(idTarea, "realizando", ID_USUARIO_SESION));
+						System.out.println(Operations.actualizarEstado(idTarea, "realizando",ID_USUARIO_SESION));
 					}catch(Exception e) {
 						System.out.println(e.getMessage());
 					}
@@ -365,7 +388,8 @@ public class Main {
 				}
 				break;
 			case 6:
-				Operations.cerrarConexion();
+				
+				ID_USUARIO_SESION = -1;
 				flag = 7;
 				break;
 				
