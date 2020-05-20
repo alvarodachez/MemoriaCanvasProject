@@ -52,8 +52,7 @@ public class Conexion {
 		idTarea = ((int) query.getSingleResult()) + 1;
 		Usuario us = (Usuario) ses.get(Usuario.class, idUser);
 		Tarea t1 = new Tarea(idTarea, nombre, estado, duracion, us);
-		System.out.println(us);
-		System.out.println(t1);
+
 		us.añadirTarea(t1);
 
 		ses.getTransaction().begin();
@@ -159,6 +158,7 @@ public class Conexion {
 
 		return us.getTareas(status.toUpperCase());
 	}
+
 	// *****Devolver todas las tareas******
 	public ArrayList<Tarea> devolverTareas() {
 		Query query = ses.createQuery("SELECT t FROM Tarea t ORDER BY idTarea ASC");
@@ -176,7 +176,7 @@ public class Conexion {
 		return usus;
 	}
 
-	//*******Devolver usuario segun su apodo*****
+	// *******Devolver usuario segun su apodo*****
 	public ArrayList<Usuario> devolverUsuarios(String apodoUsuario) {
 		Query query = ses.createQuery("SELECT u FROM Usuario u WHERE UPPER(apodo) LIKE \'" + apodoUsuario.toUpperCase()
 				+ "\' ORDER BY idUsuario ASC");
@@ -185,7 +185,7 @@ public class Conexion {
 		return usus;
 	}
 
-	//*******************BORRAR USUARIOS********************
+	// *******************BORRAR USUARIOS********************
 	public boolean borrarUsuario(int idUsuario) {
 		Usuario u1 = (Usuario) ses.get(Usuario.class, idUsuario);
 		ses.getTransaction().begin();
@@ -193,6 +193,203 @@ public class Conexion {
 		ses.getTransaction().commit();
 
 		return true;
+	}
+
+	// *******************INSERTAR PROYECTO********************
+
+	public boolean insertarProyecto(String nombre) {
+
+		int idProyecto = 0;
+		Query query = ses.createQuery("SELECT MAX(idProyecto) FROM Proyecto");
+		idProyecto = ((int) query.getSingleResult()) + 1;
+
+		Proyecto p1 = new Proyecto(idProyecto, nombre);
+
+		ses.getTransaction().begin();
+		ses.save(p1);
+		ses.getTransaction().commit();
+
+		return true;
+	}
+
+	// ************ACTUALIZAR PROYECTO***************
+
+	public boolean actualizarProyecto(String nombre, int idProyecto) throws Exception {
+
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+
+		int idPr = pr.getIdProyecto();
+
+		if (idPr != idProyecto) {
+			throw new Exception("ID de tarea incorrecto");
+		}
+
+		pr.setNombre(nombre);
+
+		ses.beginTransaction();
+
+		ses.update(pr);
+
+		ses.getTransaction().commit();
+
+		return true;
+	}
+
+	// *******************BORRAR PROYECTOS********************
+	public boolean borrarProyecto(int idProyecto) {
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+		ses.getTransaction().begin();
+		ses.delete(pr);
+		ses.getTransaction().commit();
+
+		return true;
+	}
+
+	// **********INSERTAR OBJETIVO***************
+	public boolean insertarObjetivo(String nombre, String prioridad, int idProyecto) {
+
+		int idObjetivo = 0;
+		Query query = ses.createQuery("SELECT MAX(idObjetivo) FROM Objetivo");
+		idObjetivo = ((int) query.getSingleResult()) + 1;
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+		Objetivo o1 = new Objetivo(idObjetivo, nombre, pr, prioridad);
+
+		pr.añadirObjetivo(o1);
+
+		ses.getTransaction().begin();
+
+		ses.saveOrUpdate(pr);
+		ses.getTransaction().commit();
+
+		return true;
+	}
+
+	// ************ACTUALIZAR OBJETIVOS***************
+
+	public boolean actualizarObjetivo(int idObjetivo, String prioridad, int idProyecto) throws Exception {
+
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+
+		Objetivo o1 = (Objetivo) ses.get(Objetivo.class, idObjetivo);
+
+		int idPr = pr.getIdProyecto();
+
+		if (idPr != idProyecto) {
+			throw new Exception("ID de tarea incorrecto");
+		}
+
+		pr.modificarPrioridad(idObjetivo, prioridad);
+		ses.beginTransaction();
+
+		ses.update(pr);
+
+		ses.getTransaction().commit();
+
+		return true;
+	}
+
+	// ***************BORRAR OBJETIVOS**********************
+	public boolean borrarObjetivo(int idObjetivo, int idProyecto) throws Exception {
+
+		Objetivo o1 = (Objetivo) ses.get(Objetivo.class, idObjetivo);
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+		int idPr = pr.getIdProyecto();
+
+		if (idPr != idProyecto) {
+			throw new Exception("ID de tarea incorrecto");
+		}
+
+		pr.borrarObjetivo(o1);
+		ses.getTransaction().begin();
+		ses.update(pr);
+		ses.delete(o1);
+		ses.getTransaction().commit();
+
+		return true;
+	}
+
+	// ***************AÑADIR USUARIO A PROYECTO**********************
+
+	public boolean añadirUsuarioProyecto(int idUsuario, int idProyecto) {
+
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+
+		Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
+
+		UsuarioProyecto up = new UsuarioProyecto(us, pr);
+
+		ses.getTransaction().begin();
+		ses.save(up);
+		ses.getTransaction().commit();
+
+		return true;
+
+	}
+
+	// ***************ELIMINAR USUARIO DEL PROYECTO**********************
+
+	public boolean eliminarUsuarioProyecto(int idUsuario, int idProyecto) {
+
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+
+		Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
+
+//		UsuarioProyecto up = (UsuarioProyecto) ses.get
+		
+		pr.borrarUsuarioProyecto(idUsuario);
+		us.borrarUsuarioProyecto(idProyecto);
+
+		ses.getTransaction().begin();
+		ses.update(pr);
+		ses.update(us);
+		ses.getTransaction().commit();
+
+		return true;
+	}
+
+	// ***************DEVOLVER PROYECTOS**********************
+
+	public ArrayList<Proyecto> devolverProyecto() {
+		Query query = ses.createQuery("SELECT p FROM Proyecto p ORDER BY idProyecto ASC");
+		ArrayList<Proyecto> pro = new ArrayList<Proyecto>();
+		pro = (ArrayList<Proyecto>) query.getResultList();
+		return pro;
+	}
+
+	// ***************DEVOLVER USUARIOS DE UN PROYECTO**********************
+
+	public ArrayList<UsuarioProyecto> devolverUsuario(int idProyecto) {
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+
+		ArrayList<UsuarioProyecto> aux = new ArrayList<UsuarioProyecto>();
+
+		aux.addAll(pr.getUsuarios());
+
+		return aux;
+	}
+
+	// ***************DEVOLVER PROYECTOS DE UN USUARIO**********************
+
+	public ArrayList<UsuarioProyecto> devolverProyecto(int idUsuario) {
+		Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
+
+		ArrayList<UsuarioProyecto> aux = new ArrayList<UsuarioProyecto>();
+
+		aux.addAll(us.getProyectos());
+
+		return aux;
+	}
+
+	// ***************DEVOLVER OBJETIVOS DE UN PROYECTO**********************
+
+	public ArrayList<Objetivo> devolverObjetivo(int idProyecto) {
+		Proyecto pr = (Proyecto) ses.get(Proyecto.class, idProyecto);
+
+		ArrayList<Objetivo> aux = new ArrayList<Objetivo>();
+
+		aux.addAll(pr.getIdObjetivo());
+
+		return aux;
 	}
 
 	// **************************TRASH CODE***************************

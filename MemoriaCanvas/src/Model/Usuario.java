@@ -15,11 +15,15 @@ public class Usuario {
 	private int idUsuario;
 	private String apodo;
 	private String contraseña;
+	@OneToMany(mappedBy = "idUsuario", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<UsuarioProyecto> proyectos;
+	
 	@OneToMany(mappedBy ="idUsuario",cascade = CascadeType.ALL, orphanRemoval = true ) 
 	private List<Tarea> tareas;
 	
 	public Usuario() {
 		tareas = new ArrayList<Tarea>();
+		proyectos = new ArrayList<UsuarioProyecto>();
 	}
 	
 	public Usuario(int idUsuario, String apodo, String contraseña ) {
@@ -27,6 +31,7 @@ public class Usuario {
 		this.apodo = apodo;
 		this.contraseña = contraseña;
 		this.tareas = new ArrayList<Tarea>();
+		proyectos = new ArrayList<UsuarioProyecto>();
 	}
 
 	public int getIdUsuario() {
@@ -71,6 +76,22 @@ public class Usuario {
 		}
 	}
 	
+	public void borrarUsuarioProyecto(int idProyecto) {
+		for(UsuarioProyecto u : this.proyectos) {
+			if(u.getIdProyecto().getIdProyecto() == idProyecto) {
+				this.proyectos.remove(u);
+			}
+		}
+	}
+	
+	public List<UsuarioProyecto> getProyectos() {
+		return proyectos;
+	}
+
+	public void setProyectos(List<UsuarioProyecto> proyectos) {
+		this.proyectos = proyectos;
+	}
+
 	public ArrayList<Tarea> getTareas(){
 		ArrayList<Tarea> aux = new ArrayList<Tarea>();
 		

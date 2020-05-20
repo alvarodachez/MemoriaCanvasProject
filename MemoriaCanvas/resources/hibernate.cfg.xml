@@ -2,16 +2,20 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
                                          "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
- <session-factory>
-  <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
-  <property name="hibernate.connection.password">canvas</property>
-  <property name="hibernate.connection.url">jdbc:oracle:thin:@//localhost:1521/ORCLCDB.localdomain</property>
-  <property name="hibernate.connection.username">canvas</property>
-  <property name="hibernate.dialect">org.hibernate.dialect.Oracle12cDialect</property>
-  <property name="hibernate.show_sql">true</property>
-  <property name="hibernate.format_sql">true</property>
-  <!-- <property name="hibernate.hbm2ddl.auto">create</property> -->
-  <mapping class="Model.Tarea"/>
-  <mapping class="Model.Usuario"/>
- </session-factory>
+	<session-factory>
+		<property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+		<property name="hibernate.connection.password">canvas</property>
+		<property name="hibernate.connection.url">jdbc:oracle:thin:@//dachez.ddns.net:1521/ORCLCDB.localdomain</property>
+		<property name="hibernate.connection.username">canvas</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.Oracle12cDialect</property>
+		<property name="hibernate.show_sql">true</property>
+		<property name="hibernate.format_sql">true</property>
+		<!-- <property name="hibernate.hbm2ddl.auto">create</property> -->
+		<mapping class="Model.Tarea" />
+		<mapping class="Model.Usuario" />
+		<mapping class="Model.UsuarioProyecto" />
+		<mapping class="Model.Objetivo" />
+		<mapping class="Model.UsuarioProyectoId" />
+		<mapping class="Model.Proyecto" />
+	</session-factory>
 </hibernate-configuration>

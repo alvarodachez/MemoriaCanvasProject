@@ -49,7 +49,19 @@
 		-->>Cambio a relacion 1 a muchos con hibernate (mejoras en el codigo) 
 
 		-->>Organizacion de codigo, mas legible (comentarios)
+
+	------------------------------------------------------------------------------------
+					    VERSION 1.3
+	------------------------------------------------------------------------------------
 	
+		-->Implementacion de la funcion "Proyectos":
+
+			+Crear, modificar y eliminar Proyectos
+			+Añadir, modificar o eliminar objetivos de los proyectos
+			+Añadir usuarios a los diferentes proyectos
+			+Visualizar cada uno de los elementos anteriores
+
+		-->Modificacion del menu en consola para la nueva funcion "Proyectos"
 
 
 
