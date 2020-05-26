@@ -63,5 +63,12 @@
 
 		-->Modificacion del menu en consola para la nueva funcion "Proyectos"
 
+	------------------------------------------------------------------------------------
+					    VERSION 1.4
+	------------------------------------------------------------------------------------
 
+		-->Arreglado bug borrado de usuarios de un proyecto
+
+		-->Arreglado actualizacion de listar usuarios de un proyecto al
+		insertar en una sesion abierta
 

@@ -26,6 +26,13 @@ public class Usuario {
 		proyectos = new ArrayList<UsuarioProyecto>();
 	}
 	
+	public Usuario(int idUsuario) {
+		this.idUsuario = idUsuario;
+		tareas = new ArrayList<Tarea>();
+		proyectos = new ArrayList<UsuarioProyecto>();
+		
+	}
+	
 	public Usuario(int idUsuario, String apodo, String contraseña ) {
 		this.idUsuario = idUsuario;
 		this.apodo = apodo;
@@ -110,6 +117,13 @@ public class Usuario {
 		}
 		aux.sort(new ComparatorId());
 		return aux;
+	}
+	
+	public void añadirProyecto(UsuarioProyecto up) {
+//		Proyecto pr = new Proyecto(idProyecto);
+//		UsuarioProyecto up = new UsuarioProyecto(this,idProyecto);
+		
+		this.proyectos.add(up);
 	}
 
 	@Override

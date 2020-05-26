@@ -316,10 +316,16 @@ public class Conexion {
 
 		Usuario us = (Usuario) ses.get(Usuario.class, idUsuario);
 
-		UsuarioProyecto up = new UsuarioProyecto(us, pr);
+//		UsuarioProyecto up = new UsuarioProyecto(us, pr);
+		
+		pr.añadirUsuario(us);
+//		us.añadirProyecto(idProyecto);
+		
 
 		ses.getTransaction().begin();
-		ses.save(up);
+//		ses.save(up);
+		ses.update(pr);
+//		ses.update(us);
 		ses.getTransaction().commit();
 
 		return true;
@@ -337,11 +343,11 @@ public class Conexion {
 //		UsuarioProyecto up = (UsuarioProyecto) ses.get
 		
 		pr.borrarUsuarioProyecto(idUsuario);
-		us.borrarUsuarioProyecto(idProyecto);
+//		us.borrarUsuarioProyecto(idProyecto);
 
 		ses.getTransaction().begin();
 		ses.update(pr);
-		ses.update(us);
+//		ses.update(us);
 		ses.getTransaction().commit();
 
 		return true;

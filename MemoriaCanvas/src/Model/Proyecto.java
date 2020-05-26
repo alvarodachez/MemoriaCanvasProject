@@ -32,6 +32,13 @@ public class Proyecto {
 		usuarios = new ArrayList<UsuarioProyecto>();
 		idObjetivo = new ArrayList<Objetivo>();
 	}
+	
+	public Proyecto (int idProyecto) {
+		this.idProyecto = idProyecto;
+		
+		usuarios = new ArrayList<UsuarioProyecto>();
+		idObjetivo = new ArrayList<Objetivo>();
+	}
 
 	public int getIdProyecto() {
 		return idProyecto;
@@ -52,6 +59,15 @@ public class Proyecto {
 	public void añadirObjetivo(Objetivo o) {
 		this.idObjetivo.add(o);
 	}
+	
+	public void añadirUsuario(Usuario idUsuario) {
+//		Usuario us = new Usuario(idUsuario);
+		UsuarioProyecto up = new UsuarioProyecto(idUsuario,this);
+		
+		this.usuarios.add(up);
+		idUsuario.añadirProyecto(up);
+		
+	}
 
 	public ArrayList<UsuarioProyecto>getUsuarios(){
 		ArrayList<UsuarioProyecto> aux = new ArrayList<UsuarioProyecto>();
@@ -60,11 +76,18 @@ public class Proyecto {
 		return aux;
 	}
 	public void borrarUsuarioProyecto(int idUsuario) {
-		for(UsuarioProyecto u : this.usuarios) {
-			if(u.getIdUsuario().getIdUsuario() == idUsuario) {
-				this.usuarios.remove(u);
-			}
-		}
+		
+		Usuario us = new Usuario(idUsuario);
+		UsuarioProyecto up = new UsuarioProyecto(us,this);
+		
+		this.usuarios.remove(up);
+		
+//		this.usuarios.remove(us);
+//		for(UsuarioProyecto u : this.usuarios) {
+//			if(u.getIdUsuario().getIdUsuario() == idUsuario) {
+//				this.usuarios.remove(u);
+//			}
+//		}
 	}
 
 	public void setUsuarios(List<UsuarioProyecto> usuarios) {

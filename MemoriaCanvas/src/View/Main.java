@@ -362,12 +362,12 @@ public class Main {
 						}
 						break;
 					case 8:
-//						idProyecto = readInteger("Introduce el id del proyecto");
-//						idUsuario = readInteger("Introduce el id del usuario");
+						idProyecto = readInteger("Introduce el id del proyecto");
+						idUsuario = readInteger("Introduce el id del usuario");
 
 						try {
-							//System.out.println(Operations.eliminarUsuarioProyecto(idUsuario, idProyecto));
-							System.out.println("-------------------------------------\nEN DESARROLLO\n---------------------------------\n");
+							System.out.println(Operations.eliminarUsuarioProyecto(idUsuario, idProyecto));
+//							System.out.println("-------------------------------------\nEN DESARROLLO\n---------------------------------\n");
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}
@@ -398,7 +398,7 @@ public class Main {
 						}
 						break;
 					case 12:
-						idUsuario = readInteger("Introduce el id del proyecto");
+						idUsuario = readInteger("Introduce el id del usuario");
 
 						try {
 							System.out.println(Operations.devolverProyectos(idUsuario));
